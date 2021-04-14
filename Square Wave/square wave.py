@@ -64,7 +64,7 @@ class Square_Wave:
         self.gameWin.fill(STEEL_BLUE)
         x, y = self.circle_pos
 
-        lineX = int(self.circle_radius * 3) + self.xoff + self.circle_pos_x
+        lineX = int(self.circle_radius * 3) + self.circle_pos_x
         lineY1 = self.circle_pos_y - int(self.circle_radius * 2) 
         lineY2 = self.circle_pos_y + int(self.circle_radius * 2) 
         
