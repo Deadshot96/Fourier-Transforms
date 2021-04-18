@@ -17,7 +17,7 @@ class SawToothWave(object):
         self.clock = None
         self.titleFont = None
 
-        self.N = 200
+        self.N = 10
         self.wave = list()
         self.numWavePoints = 650
         self.time = 0
