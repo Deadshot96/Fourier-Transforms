@@ -51,7 +51,21 @@ class Main:
         pass
 
     def run(self):
-        pass
+        
+        if not pygame.display.get_init():
+            self.display_init()
+
+        run = True
+        while run:
+            self.clock.tick(self.fps)
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    run = False
+
+        self.quit()
+
 
 
 if __name__ == "__main__":
