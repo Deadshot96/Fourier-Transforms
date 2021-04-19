@@ -18,6 +18,9 @@ class Main:
         self.clock = None
         self.titleFont = None
 
+        self.points = list()
+        self.drawFlag = True
+
     def display_init(self):
 
         pygame.init()
@@ -29,7 +32,8 @@ class Main:
         pygame.display.set_caption("Arbitrary Fourier Tranform")
         self.win.fill(MIDBLACK)
 
-        self.gameWin = self.win.subsurface((self.xoff, self.yoff, self.win_width, self.win_height))
+        self.gameRect = pygame.Rect((self.xoff, self.yoff, self.win_width, self.win_height))
+        self.gameWin = self.win.subsurface(self.gameRect)
         self.gameWin.fill(STEEL_BLUE)
 
         self.clock = pygame.time.Clock()
@@ -46,7 +50,7 @@ class Main:
 
 
     def draw(self):
-        pass
+        pygame.display.update()
 
     def quit(self):
         pygame.font.quit()
@@ -66,6 +70,44 @@ class Main:
 
                 if event.type == pygame.QUIT:
                     run = False
+
+                # if event.type == pygame.MOUSEBUTTONDOWN:
+                #     x, y = pygame.mouse.get_pos()
+
+                #     if self.drawFlag and self.gameRect.collidepoint(x - self.xoff, y - self.yoff):
+                #         x -= self.xoff
+                #         y -= self.yoff
+                #         print("In MOUSEBUTTONDOWN: ", x, y, sep="\t")
+                #         self.gameWin.set_at((x, y), MID_WHITE)
+                #         pygame.display.update()
+                #         self.points.append((x, y))
+
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.drawFlag = False
+
+                if event.type == pygame.KEYDOWN:
+                    
+                    if event.key == pygame.K_ESCAPE:
+                        self.gameWin.fill(STEEL_BLUE)
+                        self.points.clear()
+                        self.drawFlag = True
+
+            pressed = pygame.mouse.get_pressed()
+
+            if pressed[0]:
+                    x, y = pygame.mouse.get_pos()
+
+                    if self.drawFlag and self.gameRect.collidepoint(x - self.xoff, y - self.yoff):
+                        x -= self.xoff
+                        y -= self.yoff
+                        self.gameWin.set_at((x, y), MID_WHITE)
+                        self.points.append((x, y))
+
+                        if len(self.points) > 2:
+                            p1 = self.points[-1]
+                            p2 = self.points[-2]
+
+                            pygame.draw.line(self.gameWin, MID_WHITE, p2, p1) 
 
             self.draw()
 
