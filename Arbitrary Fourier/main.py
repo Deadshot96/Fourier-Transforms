@@ -1,6 +1,7 @@
 import pygame
 import math
 from settings import *
+from collections import namedtuple
 
 class Main:
 
@@ -19,7 +20,13 @@ class Main:
         self.titleFont = None
 
         self.points = list()
+        self.dftPointObj = namedtuple("dftPointObj", ["re", "im", "amp", "freq", "phase"])
+        self.dftPoints = list()
         self.drawFlag = True
+        self.time = 0
+        self.dt = 0.05
+        self.centrePos = self.win_width // 2, self.win_height // 2
+        self.path = list()
 
     def display_init(self):
 
@@ -48,9 +55,42 @@ class Main:
         self.win.blit(title, (blitX, blitY))
         pygame.display.update()
 
+    def epiCycle(self):
+        pass
 
     def draw(self):
+        if self.dftPoints:
+            self.gameWin.fill(STEEL_BLUE)
+
+            x, y = self.centrePos
+
+            for i in range(len(self.points)):     
+                prevX, prevY = x, y
+
+
+
         pygame.display.update()
+
+    def dft(self):
+
+        for k in range(len(self.points)):
+            total = complex(0, 0)
+            for n in range(len(self.points)):
+                exp = complex(0, -2 * math.pi * k * n / len(self.points))
+                total += (self.points[n] * math.e ** exp)
+
+            total /= len(self.points)
+            re = total.real
+            im = total.imag
+            amp = abs(total)
+            freq = k
+            phase = math.atan2(im, re)
+
+            obj = self.dftPointObj(re, im, amp, freq, phase)
+            self.dftPoints.append(obj) 
+
+        self.dftPoints.sort(key=lambda x: x.amp, reverse=True)
+
 
     def quit(self):
         pygame.font.quit()
@@ -90,7 +130,13 @@ class Main:
                     if event.key == pygame.K_ESCAPE:
                         self.gameWin.fill(STEEL_BLUE)
                         self.points.clear()
+                        self.path.clear()
+                        self.dftPoints.clear()
                         self.drawFlag = True
+                        
+                    if event.key == pygame.K_RETURN and not self.drawFlag:
+                        self.dft()
+                        print(self.dftPoints)
 
             pressed = pygame.mouse.get_pressed()
 
@@ -101,13 +147,14 @@ class Main:
                         x -= self.xoff
                         y -= self.yoff
                         self.gameWin.set_at((x, y), MID_WHITE)
-                        self.points.append((x, y))
+                        pt = complex(x, y)
+                        self.points.append(pt)
 
                         if len(self.points) > 2:
-                            p1 = self.points[-1]
-                            p2 = self.points[-2]
+                            p1 = self.points[-1].real, self.points[-1].imag
+                            p2 = self.points[-2].real, self.points[-2].imag
 
-                            pygame.draw.line(self.gameWin, MID_WHITE, p2, p1) 
+                            pygame.draw.line(self.gameWin, MID_WHITE, p2, p1, 2) 
 
             self.draw()
 
