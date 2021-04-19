@@ -114,6 +114,7 @@ class Main:
         self.dftPoints.sort(key=lambda x: x.amp, reverse=True)
         self.time = 0
         self.dt = 2 * math.pi / len(self.dftPoints)
+        # print(self.dftPoints)
 
     def quit(self):
         pygame.font.quit()
