@@ -7,8 +7,8 @@ class Main:
     def __init__(self):
         self.width = WIDTH
         self.height = HEIGHT
-        self.gameWidth = WIN_WIDTH
-        self.gameHeight = WIN_HEIGHT
+        self.win_width = WIN_WIDTH
+        self.win_height = WIN_HEIGHT
         self.xoff = X_OFF
         self.yoff = Y_OFF
         self.fps = FPS
@@ -26,10 +26,10 @@ class Main:
 
         winDims = self.width, self.height
         self.win = pygame.display.set_mode(winDims)
+        pygame.display.set_caption("Arbitrary Fourier Tranform")
         self.win.fill(MIDBLACK)
 
-        gameRect = self.xoff, self.yoff, self.gameWidth, self.gameHeight
-        self.gameWin = self.win.subsurface(gameRect)
+        self.gameWin = self.win.subsurface((self.xoff, self.yoff, self.win_width, self.win_height))
         self.gameWin.fill(STEEL_BLUE)
 
         self.clock = pygame.time.Clock()
@@ -42,13 +42,16 @@ class Main:
         blitY = (self.yoff - h) // 2
 
         self.win.blit(title, (blitX, blitY))
+        pygame.display.update()
 
 
     def draw(self):
         pass
 
     def quit(self):
-        pass
+        pygame.font.quit()
+        pygame.display.quit()
+        pygame.quit()
 
     def run(self):
         
@@ -63,6 +66,8 @@ class Main:
 
                 if event.type == pygame.QUIT:
                     run = False
+
+            self.draw()
 
         self.quit()
 
